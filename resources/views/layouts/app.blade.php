@@ -28,10 +28,9 @@
     </style>
 </head>
 <body>
-    <div class="w-full flex items-center">
+    <div class="w-screen h-screen flex flex-col md:flex-row">
         @include('layouts.sidebar')
         @yield('content')
-
     </div>
 </body>
 </html>

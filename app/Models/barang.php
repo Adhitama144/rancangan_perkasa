@@ -15,7 +15,7 @@ class Barang extends Model
     // Kolom yang boleh diisi (fillable)
     protected $fillable = [
         'nama_barang',
-        'kategori',
+        'kategori_id',
         'harga',
         'stok',
         'foto',
@@ -24,7 +24,7 @@ class Barang extends Model
     // Definisikan relasi ke model Kategori (bisa menggunakan kategori() jika ada model Kategori)
     public function kategori()
     {
-        return $this->belongsTo(Kategori::class, 'kategori');
+        return $this->belongsTo(Kategori::class, 'kategori_id');
     }
 
     // Definisikan relasi ke model Pesanan

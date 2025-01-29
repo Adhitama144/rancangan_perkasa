@@ -1,10 +1,8 @@
-
-
-@extends('layouts.sidebar')
-
+@extends('layouts.app')
 @section('title', 'Dashboard')
-@section('header', 'Welcome to the Dashboard')
 
 @section('content')
-    <p class="text-gray-700">This is your dashboard content.</p>
+    <div class="w-full h-full">
+        <p class="text-gray-700">This is your dashboard content.</p>
+    </div>
 @endsection

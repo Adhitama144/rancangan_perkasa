@@ -15,7 +15,11 @@
     />
     <style>
       .login {
-        background: url("./dist/images/login-new.jpeg");
+        width: 100vw;
+        height: 100vh;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-image: url("./dist/images/login-baru.png");
       }
     </style>
     <title>Daftar</title>
@@ -47,7 +51,7 @@
         <div class="leading-loose">
           <form class="max-w-xl m-4 p-10 bg-white rounded shadow-xl" action="/register" method="POST">
             @csrf
-            <p class="text-gray-800 font-medium">Daftar</p>
+            <p class="text-gray-800 font-medium text-center text-lg font-bold text-black-500">Daftar</p>
             <div class="">
               <label class="block text-sm text-black-00" for="nama"
                 >Nama</label
@@ -76,9 +80,10 @@
                 aria-label="Email"
               />
             </div>
+
             <div class="mt-2">
               <label class="block text-sm text-black-00" for="password"
-                >Password</label
+                >Kata Sandi</label
               >
               <div class="flex">
                 <input
@@ -139,7 +144,7 @@
             </div>
             <div class="mt-4">
               <button
-                class="px-4 py-1 text-white font-light tracking-wider bg-gray-900 rounded"
+                class="px-4 py-1 text-white font-light tracking-wider bg-blue-500 rounded"
                 type="submit"
               >
                 Daftar

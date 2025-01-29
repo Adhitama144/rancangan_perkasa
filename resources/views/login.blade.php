@@ -16,7 +16,11 @@
     />
     <style>
       .login {
-        background: url("./dist/images/login-new.jpeg");
+        width: 100vw;
+        height: 100vh;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-image: url("./dist/images/login-baru.png");
       }
     </style>
   </head>
@@ -69,7 +73,7 @@
               </div>
               <div class="mt-2">
                 <label class="block text-sm text-black-00" for="password"
-                  >Password</label
+                  >Kata Sandi</label
                 >
                 <div class="flex">
                   <input
@@ -92,7 +96,7 @@
               </div>
             <div class="mt-4 items-center justify-between">
               <button
-                class="px-4 py-1 text-white font-light tracking-wider bg-gray-900 rounded"
+                class="px-4 py-1 text-white font-light tracking-wider bg-blue-500 rounded"
                 type="submit"
               >
                 Masuk

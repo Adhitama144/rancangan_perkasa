@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Baraang</title>
-    <link rel="stylesheet" href="dist/styles.css"/>
-</head>
-<body>
-    @if ($errors->any())
+@extends('layouts.app')
+@section('title', 'Barang')
+
+@section('content')
+    <div class="flex items-center justify-center">
+        @if ($errors->any())
     <div id="alert" class="bg-red-300 border border-red-300 text-red-dark px-12 py-3 rounded fixed top-0 right-0 m-4 z-50" role="alert">
         <strong class="font-bold">Gagal!</strong>
         <span class="block sm:inline">{{ $errors->first() }}</span>
@@ -26,7 +21,7 @@
     </div>
     @endif
 
-    <div class="p-4">
+    <div class="w-full h-full p-4">
         <!-- Judul -->
         <h2 class="text-lg text-center font-bold text-gray-700 mb-2">Daftar Barang</h2>
 
@@ -55,9 +50,9 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="kategori">Kategori</label>
                         <select id="kategori" name="kategori" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" required>
                             <option value="" disabled selected>Pilih kategori</option>
-                            <option value=1>Kategori 1</option>
-                            <option value=2>Kategori 2</option>
-                            <option value=3>Kategori 3</option>
+                            @foreach ($kategori as $item)
+                                <option value="{{ $item->id }}">{{ $item->nama_kategori }}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -116,10 +111,9 @@
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="kategori_edit">Kategori</label>
                         <select id="kategori_edit" name="kategori_edit" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-                            <option value="">Pilih Kategori</option>
-                            <option value="kategori1">Kategori 1</option>
-                            <option value="kategori2">Kategori 2</option>
-                            <option value="kategori3">Kategori 3</option>
+                            @foreach ($kategori as $item)
+                                <option value="{{ $item->id }}">{{ $item->nama_kategori }}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -167,7 +161,7 @@
             <h1>Apakah anda yakin ingin menghapus data ini?</h1>
 
             <!-- Form -->
-            <form id="dataModalHapus" action="/kategori-hapus" method="POST">
+            <form id="dataModalHapus" action="/barang-hapus" method="POST">
                 @csrf
                 <div class="mb-4">
                     <input type="hidden" id="id_hapus" name="id_hapus" required>
@@ -187,13 +181,13 @@
      </div>
 
         <!-- Tabel -->
-        <div class="flex flex-col mx-12">
+        <div class="flex flex-col w-full md:mx-12">
             <!-- Button Tambah -->
             <!-- Button untuk membuka dialog -->
             <div class="flex justify-left my-4 mx-4">
                 <button
                 class="px-4 py-2 text-sm text-white bg-green-500 rounded hover:bg-green-600"
-                onclick="document.getElementById('dataModal').classList.remove('hidden')">
+                onclick="tambah()">
                 Tambah Data
                 </button>
             </div>
@@ -216,15 +210,15 @@
                     <tr class="border-b">
                         <td class="px-4 py-2 text-center text-sm text-gray-700">{{ $index }}</td>
                         <td class="px-4 py-2 text-center text-sm text-gray-700">{{ $item->nama_barang }}</td>
-                        <td class="px-4 py-2 text-center text-sm text-gray-700">{{ $item->kategori }}</td>
+                        <td class="px-4 py-2 text-center text-sm text-gray-700">{{ $item->kategori->nama_kategori }}</td>
                         <td class="px-4 py-2 text-center text-sm text-gray-700">{{ number_format($item->harga, 0, ',', '.') }}</td>
                         <td class="px-4 py-2 text-center text-sm text-gray-700">{{ $item->stok }}</td>
                         <td class="px-4 py-2 text-center text-sm text-gray-700">
-                            <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto {{ $item->nama_barang }}" class="h-16 w-16 object-cover rounded">
+                            <img src="{{ asset('storage/uploads/foto_barang/' . $item->foto) }}" alt="Foto {{ $item->nama_barang }}" class="h-16 w-16 object-cover rounded">
                         </td>
                         <td class="px-4 py-2 text-center text-sm text-gray-700">
-                            <button onclick="edit('{{ $item->id }}','{{ $item->nama_barang }}','{{ $item->kategori }}','{{ $item->harga }}','{{ $item->stok }}')" class="px-3 py-1 text-sm text-white bg-yellow-500 rounded hover:bg-yellow-600">Edit</button>
-                            <button onclick="hapus({{ $item->id }})" class="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600">Hapus</button>
+                            <button onclick="edit('{{ $item->id }}','{{ $item->nama_barang }}','{{ $item->kategori_id }}','{{ $item->harga }}','{{ $item->stok }}')" class="px-3 py-1 text-sm text-white bg-yellow-500 rounded hover:bg-yellow-600">Edit</button>
+                            <button onclick="hapus('{{ $item->id }}')" class="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600">Hapus</button>
                         </td>
                     </tr>
                     <?php $index++; ?>
@@ -233,6 +227,8 @@
             </table>
         </div>
     </div>
+    </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
     <script>
@@ -242,7 +238,7 @@
 
         function edit(id, nama_barang, kategori, harga, stok, foto) {
             document.getElementById('daftar-barang').classList.add('hidden');
-            document.getElementById('dataModalEdit').classList.remove('hidden');
+            document.getElementById('dataModaledit').classList.remove('hidden');
 
             // Isi data ke input form edit
             document.getElementById('id_edit').value = id;
@@ -257,12 +253,18 @@
             fotoPreview.alt = `Foto ${nama_barang}`;
         }
 
+        function tambah() {
+            document.getElementById('daftar-barang').classList.add('hidden');
+            document.getElementById('dataModal').classList.remove('hidden');
+        }
+
         function hapus(id) {
             document.getElementById('daftar-barang').classList.add('hidden');
             document.getElementById('dataModalHapus').classList.remove('hidden');
             // Set nilai id barang yang akan dihapus
             document.getElementById('id_hapus').value = id;
         }
+
 
         function tutup() {
             const pesan = document.getElementById("alert");
@@ -271,5 +273,4 @@
             }
         }
     </script>
-</body>
-</html>
+@endsection

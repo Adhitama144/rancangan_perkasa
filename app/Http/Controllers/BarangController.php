@@ -29,18 +29,19 @@ class BarangController extends Controller
             'kategori' => 'required|integer',
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $barang = new Barang();
         $barang->nama_barang = $request->input('nama_barang');
-        $barang->kategori = $request->input('kategori');
+        $barang->kategori_id = $request->input('kategori');
         $barang->harga = $request->input('harga');
         $barang->stok = $request->input('stok');
 
 
         if ($request->hasFile('foto')) {
-            $barang->foto = $request->file('foto')->store('uploads/foto_barang', 'public');
+            $lokasi_full = $request->file('foto')->store('uploads/foto_barang', 'public'); 
+            $barang->foto = basename($lokasi_full);
         }
 
         if ($barang->save()) {
@@ -50,32 +51,33 @@ class BarangController extends Controller
         return redirect()->back()->withErrors('Gagal menambahkan barang.');
     }
 
-    public function edit(Request $request, $id)
+    public function edit(Request $request)
     {
         $request->validate([
-            'nama_barang' => 'required|string|max:255',
-            'kategori' => 'required|integer',
-            'harga' => 'required|numeric|min:0',
-            'stok' => 'required|integer|min:0',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'nama_barang_edit' => 'required|string|max:255',
+            'kategori_edit' => 'required|integer',
+            'harga_edit' => 'required|numeric|min:0',
+            'stok_edit' => 'required|integer|min:0',
+            'foto_edit' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $barang = Barang::find($id);
+        $barang = Barang::find($request->input('id_edit'));
 
         if (!$barang) {
             return redirect()->back()->withErrors('Barang tidak ditemukan.');
         }
 
-        $barang->nama_barang = $request->input('nama_barang');
-        $barang->kategori = $request->input('kategori');
-        $barang->harga = $request->input('harga');
-        $barang->stok = $request->input('stok');
+        $barang->nama_barang = $request->input('nama_barang_edit');
+        $barang->kategori_id = $request->input('kategori_edit');
+        $barang->harga = $request->input('harga_edit');
+        $barang->stok = $request->input('stok_edit');
 
-        if ($request->hasFile('foto')) {
+        if ($request->hasFile('foto_edit')) {
             if ($barang->foto) {
-                Storage::disk('public')->delete($barang->foto);
+                Storage::disk('public')->delete('uploads/foto_barang/' . $barang->foto);
             }
-            $barang->foto = $request->file('foto')->store('uploads/foto_barang', 'public');
+            $lokasi_full = $request->file('foto_edit')->store('uploads/foto_barang', 'public'); 
+            $barang->foto = basename($lokasi_full);
         }
 
         if ($barang->save()) {
@@ -85,16 +87,16 @@ class BarangController extends Controller
         return redirect()->back()->withErrors('Gagal memperbarui barang.');
     }
 
-    public function hapus(Request $request, $id)
+    public function hapus(Request $request)
     {
-        $barang = Barang::find($id);
+        $barang = Barang::find($request->input('id_hapus'));
 
         if (!$barang) {
             return redirect()->back()->withErrors('Barang tidak ditemukan.');
         }
 
         if ($barang->foto) {
-            Storage::disk('public')->delete($barang->foto);
+            Storage::disk('public')->delete('uploads/foto_barang/' . $barang->foto);
         }
 
         if ($barang->delete()) {
